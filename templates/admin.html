@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="icon" href="/static/icon.svg" type="image/svg+xml">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- jQuery UI CSS -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <!-- jQuery UI JS -->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        .datepicker-dropdown {
+            z-index: 1500 !important;
+        }
+
+        .input-group-append .input-group-text {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        h1 {
+            display: inline-block;
+        }
+
+        .btn-logout {
+            margin-left: auto;
+            color: white;
+            background-color: red;
+            border-color: red;
+        }
+
+        .title-and-logout {
+            display: flex;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <!-- Title and Logout Button -->
+    <div class="title-and-logout">
+        <h1 class="text-center mr-auto">Admin Dashboard</h1>
+        <a class="btn btn-logout" href="{{ url_for('logout') }}">Logout</a>
+    </div>
+ 
+    <!-- Card Body -->
+    <div class="card-body">
+        <div class="form-group">
+            <label for="datepicker">Select Date:</label>
+            <div class="input-group">
+                <input type="text" id="datepicker" class="form-control" readonly>
+                <div class="input-group-append">
+                    <span class="input-group-text calendar-icon" id="calendarIcon"><i class="fas fa-calendar-alt"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Appointments Date -->
+    <div id="appointmentsDate" class="alert alert-info"></div>
+
+    <!-- Bookings Table -->
+    <table id="bookingsTable" class="table table-striped mt-4">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Date</th>
+            <th>Time Slot</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for booking in bookings %}
+        <tr>
+            <td>{{ booking[0] }}</td>
+            <td>{{ booking[1] }}</td>
+            <td>{{ booking[2] }}</td>
+            <td>{{ booking[3] }}</td>
+            <td>{{ booking[4] }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div id="noAppointments" class="alert alert-info" style="display: none;">No appointments for this date.</div>
+
+</div>
+
+<!-- Bootstrap Bundle with Popper -->
+
+<script>
+    $(document).ready(function() {
+        // Initialize Datepicker
+        $('#datepicker').datepicker({
+            autoclose: true,
+            todayHighlight: true,
+            dateFormat: 'mm/dd/yy' // Set the date format
+        });
+
+        // Show "All appointments" by default
+        $('#appointmentsDate').text('All appointments');
+
+        // Function to filter appointments based on selected date
+        $('#datepicker').change(function() {
+            var selectedDate = $(this).val();
+            $('#bookingsTable tbody tr').hide();
+            var appointmentsShown = false;
+            if(selectedDate) {
+                $('#appointmentsDate').text('Appointments of ' + selectedDate).show();
+                $('#bookingsTable tbody tr').each(function() {
+                    var bookingDate = $(this).find('td:eq(3)').text().trim();
+                    // Parse the booking date using Date object
+                    var parts = bookingDate.split('/');
+                    var formattedBookingDate = new Date(parts[2], parts[0] - 1, parts[1]); // Months are 0-indexed
+                    var selectedDateFormatted = $.datepicker.parseDate('mm/dd/yy', selectedDate);
+                    if (formattedBookingDate.getTime() === selectedDateFormatted.getTime()) {
+                        $(this).show();
+                        appointmentsShown = true;
+                    }
+                });
+            } else {
+                $('#appointmentsDate').text('All appointments').show();
+                $('#bookingsTable tbody tr').show();
+                appointmentsShown = true;
+            }
+
+            // If no appointments are shown, display a message
+            if (!appointmentsShown) {
+                $('#noAppointments').show();
+            } else {
+                $('#noAppointments').hide();
+            }
+        });
+
+        // Open datepicker when calendar icon is clicked
+        $('#calendarIcon').click(function() {
+            $('#datepicker').datepicker('show');
+        });
+    });
+</script>
+</body>
+</html>

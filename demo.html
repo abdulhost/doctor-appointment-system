@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctor Appointment</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <!-- jQuery UI CSS -->
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <!-- jQuery UI JS -->
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    .datepicker-dropdown {
+      z-index: 1500 !important;
+    }
+
+    .input-group-append .input-group-text {
+      background-color: #007bff;
+      border-color: #007bff;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    h2 {
+      color: #007bff;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header">
+            <h1>Book Your Appointment</h1>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label for="datepicker">Select Date:</label>
+              <div class="input-group">
+                <input type="text" id="datepicker" class="form-control" readonly>
+                <div class="input-group-append">
+                  <span class="input-group-text calendar-icon"><i class="fas fa-calendar-alt"></i></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function() {
+      // Initialize datepicker
+      $('#datepicker').datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        minDate: 0, // Disable previous dates starting from today
+        format: 'yyyy-mm-dd',
+        orientation: "auto"
+      });
+
+      // Show datepicker when clicking on the calendar icon
+      $('.calendar-icon').click(function() {
+        $('#datepicker').datepicker('show');
+      });
+    });
+  </script>
+
+</body>
+
+</html>
